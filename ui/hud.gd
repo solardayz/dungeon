@@ -3,6 +3,7 @@ extends CanvasLayer
 @onready var hp_bar       : ProgressBar    = $HUD/TopLeft/HPRow/HPBar
 @onready var hp_label     : Label          = $HUD/TopLeft/HPRow/HPLabel
 @onready var kill_label   : Label          = $HUD/TopLeft/KillLabel
+@onready var gold_label   : Label          = $HUD/TopLeft/GoldLabel
 @onready var story_panel  : Control        = $StoryBanner
 @onready var story_text   : Label          = $StoryBanner/Margin/HBox/StoryText
 @onready var story_btn    : Button         = $StoryBanner/Margin/HBox/OKButton
@@ -15,14 +16,18 @@ extends CanvasLayer
 @onready var joystick     : Node2D         = $MobileControls/Joystick
 @onready var atk_btn      : Node2D         = $MobileControls/AttackBtn
 @onready var dash_btn     : Node2D         = $MobileControls/DashBtn
+@onready var whirlwind_btn : Node2D        = $MobileControls/WhirlwindBtn
+@onready var magic_btn     : Node2D        = $MobileControls/MagicBtn
 
 var kills  : int = 0
 var total  : int = 0
 var player      = null
 
-var mobile_dir   : Vector2 = Vector2.ZERO
-var mobile_atk   : bool    = false
-var mobile_dash  : bool    = false
+var mobile_dir        : Vector2 = Vector2.ZERO
+var mobile_atk        : bool    = false
+var mobile_dash       : bool    = false
+var mobile_whirlwind  : bool    = false
+var mobile_magic      : bool    = false
 
 func _ready():
 	story_btn.pressed.connect(_on_story_ok)
@@ -32,14 +37,18 @@ func _ready():
 	joystick.direction_changed.connect(_on_joystick_changed)
 	atk_btn.pressed.connect(_on_atk_pressed)
 	dash_btn.pressed.connect(_on_dash_pressed)
+	whirlwind_btn.pressed.connect(_on_whirlwind_pressed)
+	magic_btn.pressed.connect(_on_magic_pressed)
 	get_viewport().size_changed.connect(_layout_mobile)
 	call_deferred(&"_layout_mobile")
 
 func _layout_mobile():
 	var vp = get_viewport().get_visible_rect().size
-	joystick.position = Vector2(160, vp.y - 160)
-	atk_btn.position  = Vector2(vp.x - 140, vp.y - 140)
-	dash_btn.position = Vector2(vp.x - 310, vp.y - 120)
+	joystick.position      = Vector2(160, vp.y - 160)
+	atk_btn.position       = Vector2(vp.x - 140, vp.y - 140)
+	dash_btn.position      = Vector2(vp.x - 300, vp.y - 120)
+	whirlwind_btn.position = Vector2(vp.x - 290, vp.y - 250)
+	magic_btn.position     = Vector2(vp.x - 140, vp.y - 280)
 
 func setup(p, t: int):
 	player = p
@@ -74,7 +83,18 @@ func _on_player_died():
 	await get_tree().create_timer(0.5).timeout
 	show_result(false)
 
+func update_gold(amount: int):
+	if is_instance_valid(gold_label):
+		gold_label.text = "골드: %d G" % amount
+
+func start_skill_cooldown(skill_name: String, cd: float):
+	if skill_name == "whirlwind" and is_instance_valid(whirlwind_btn):
+		whirlwind_btn.start_cooldown(cd)
+	elif skill_name == "magic" and is_instance_valid(magic_btn):
+		magic_btn.start_cooldown(cd)
+
 func show_result(victory: bool):
+	SoundManager.stop_bgm()
 	result_panel.show()
 	if victory:
 		SoundManager.play("victory", 1.0, 2.0)
@@ -89,10 +109,12 @@ func show_result(victory: bool):
 
 func _on_story_ok():
 	SoundManager.play("click")
+	SoundManager.play_bgm()
 	story_panel.hide()
 
 func _on_restart():
 	SoundManager.play("click")
+	SoundManager.stop_bgm()
 	get_tree().reload_current_scene()
 
 func show_story(text_str: String):
@@ -116,6 +138,12 @@ func _on_atk_pressed():
 func _on_dash_pressed():
 	mobile_dash = true
 
+func _on_whirlwind_pressed():
+	mobile_whirlwind = true
+
+func _on_magic_pressed():
+	mobile_magic = true
+
 func get_mobile_dir() -> Vector2:
 	return mobile_dir
 
@@ -130,3 +158,16 @@ func consume_mobile_dash() -> bool:
 		mobile_dash = false
 		return true
 	return false
+
+func consume_mobile_whirlwind() -> bool:
+	if mobile_whirlwind:
+		mobile_whirlwind = false
+		return true
+	return false
+
+func consume_mobile_magic() -> bool:
+	if mobile_magic:
+		mobile_magic = false
+		return true
+	return false
+

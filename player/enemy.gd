@@ -99,14 +99,43 @@ func take_damage(dmg: int):
 	if hp <= 0:
 		_die()
 
+var ItemDropClass = preload("res://item_drop.gd")
+
 func _die():
 	is_dead = true
 	SoundManager.play("enemy_die", randf_range(0.95, 1.1))
+	_spawn_drops()
 	emit_signal("died", self)
 	# 사망 깜박임 후 제거
 	$Sprite2D.modulate = Color(0.5, 0.5, 0.5, 0.5)
 	await get_tree().create_timer(0.4).timeout
 	queue_free()
+
+func _spawn_drops():
+	var parent_node = get_parent()
+	if not parent_node:
+		return
+	if is_boss:
+		var g = ItemDropClass.new()
+		g.setup("gold", 100)
+		g.global_position = global_position + Vector2(-15, 0)
+		parent_node.add_child(g)
+
+		var p = ItemDropClass.new()
+		p.setup("potion", 50)
+		p.global_position = global_position + Vector2(15, 0)
+		parent_node.add_child(p)
+	else:
+		if randf() < 0.8:
+			var g = ItemDropClass.new()
+			g.setup("gold", randi_range(10, 25))
+			g.global_position = global_position + Vector2(randf_range(-10, 10), randf_range(-10, 10))
+			parent_node.add_child(g)
+		if randf() < 0.45:
+			var p = ItemDropClass.new()
+			p.setup("potion", 35)
+			p.global_position = global_position + Vector2(randf_range(-15, 15), randf_range(-15, 15))
+			parent_node.add_child(p)
 
 func _update_animation():
 	var vel = velocity if velocity.length() > 10 else last_direction

@@ -15,9 +15,22 @@ var font: Font = null
 var is_pressed: bool = false
 var touch_id: int = -1
 
+var cooldown_time: float = 0.0
+var cooldown_remaining: float = 0.0
+
 func _ready():
 	if ResourceLoader.exists("res://fonts/korean.ttf"):
 		font = load("res://fonts/korean.ttf")
+
+func start_cooldown(dur: float):
+	cooldown_time = dur
+	cooldown_remaining = dur
+	queue_redraw()
+
+func _process(delta):
+	if cooldown_remaining > 0.0:
+		cooldown_remaining = max(0.0, cooldown_remaining - delta)
+		queue_redraw()
 
 func _draw():
 	# 그림자 / 외부 링
@@ -33,6 +46,15 @@ func _draw():
 		var txt_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
 		var txt_pos = Vector2(-txt_size.x / 2.0, txt_size.y * 0.35)
 		draw_string(font, txt_pos, text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, Color(1, 1, 1, 1))
+
+	# 쿨타임 오버레이 & 텍스트
+	if cooldown_remaining > 0.0:
+		draw_circle(Vector2.ZERO, radius, Color(0.05, 0.05, 0.1, 0.65))
+		if font:
+			var cd_str = "%.1f" % cooldown_remaining
+			var cd_sz = font.get_string_size(cd_str, HORIZONTAL_ALIGNMENT_CENTER, -1, int(font_size * 0.85))
+			var cd_pos = Vector2(-cd_sz.x / 2.0, cd_sz.y * 0.35)
+			draw_string(font, cd_pos, cd_str, HORIZONTAL_ALIGNMENT_CENTER, -1, int(font_size * 0.85), Color(1, 0.95, 0.3, 1))
 
 func _input(event):
 	if event is InputEventScreenTouch:
@@ -59,6 +81,8 @@ func _input(event):
 					_set_state(false)
 
 func _set_state(pressed_state: bool):
+	if pressed_state and cooldown_remaining > 0.0:
+		return
 	if is_pressed == pressed_state:
 		return
 	is_pressed = pressed_state
@@ -69,3 +93,4 @@ func _set_state(pressed_state: bool):
 	else:
 		Input.action_release(action_name)
 		emit_signal("released")
+
