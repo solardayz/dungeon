@@ -41,11 +41,14 @@ func _ready():
 	player_node.position = Vector2(273, -2)
 	dungeon.add_child(player_node)
 
-	# 플레이어 카메라 활성화
+	# 플레이어 카메라 활성화 및 화면 확대 (1.85배 줌인)
 	var cam = player_node.get_node_or_null("Camera2D")
 	if cam:
 		cam.enabled = true
 		cam.make_current()
+		cam.zoom = Vector2(1.85, 1.85)
+		cam.position_smoothing_enabled = true
+		cam.position_smoothing_speed = 8.0
 
 	# 일반 고블린 스폰 (7마리)
 	for i in range(total_enemies - 1):
