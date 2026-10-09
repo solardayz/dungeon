@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://player001"]
+
+[ext_resource type="PackedScene" uid="uid://ipxyktw0t1p0" path="res://player/goblin.tscn" id="1"]
+[ext_resource type="Script" path="res://player/player.gd" id="2"]
+
+[node name="Player" instance=ExtResource("1")]
+script = ExtResource("2")
+modulate = Color(0.5, 0.8, 1.5, 1)

@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://enemy001"]
+
+[ext_resource type="PackedScene" uid="uid://ipxyktw0t1p0" path="res://player/goblin.tscn" id="1"]
+[ext_resource type="Script" path="res://player/enemy.gd" id="2"]
+
+[node name="Enemy" instance=ExtResource("1")]
+script = ExtResource("2")
+
+[node name="HPBar" type="ProgressBar" parent="."]
+offset_left = -24.0
+offset_top = -72.0
+offset_right = 24.0
+offset_bottom = -60.0
+min_value = 0.0
+max_value = 40.0
+value = 40.0
+show_percentage = false
+modulate = Color(1, 0.3, 0.3, 1)
