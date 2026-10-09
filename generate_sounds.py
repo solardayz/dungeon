@@ -245,103 +245,88 @@ def make_fireball():
         samples.append(val)
     return samples
 
-# 14. BGM: 던전 배경음악 (16초 루프, 120BPM, 미스터리 던전 신스)
+# 14. BGM: 던전 배경음악 (16초 루프, 124BPM, 강력한 비트 & 신스 베이스 & 멜로디)
 def make_bgm():
     dur = 16.0
     n = int(SAMPLE_RATE * dur)
     samples = [0.0] * n
-    bpm = 120.0
-    beat_dur = 60.0 / bpm # 0.5s
-    total_beats = 32
-    
-    # Root chord progression (8 bars, each bar = 4 beats = 2.0s)
-    roots = [
-        146.83, # D3
-        174.61, # F3
-        130.81, # C3
-        146.83, # D3
-        164.81, # E3
-        174.61, # F3
-        196.00, # G3
-        146.83  # D3
-    ]
-    
-    # 1. Bassline & Drums per beat
+    bpm = 124.0
+    beat_dur = 60.0 / bpm
+    total_beats = int(dur / beat_dur)
+
+    # Chord roots (8 bars, each bar = 4 beats)
+    roots = [146.83, 146.83, 174.61, 196.00, 146.83, 146.83, 220.00, 196.00] # Dm, Dm, F, G, Dm, Dm, Am, G
+
     for beat in range(total_beats):
-        beat_t = beat * beat_dur
-        bar = beat // 4
-        root = roots[bar] / 2.0 # Sub-bass octave
+        t_start = beat * beat_dur
+        bar = (beat // 4) % len(roots)
+        root = roots[bar] / 2.0 # ~73.4Hz D2
         
-        # Bass note on beats 0, 1.5, 2
-        bar_beat = beat % 4
-        if bar_beat in [0, 2]:
-            note_dur = beat_dur * 0.85
-            start_i = int(beat_t * SAMPLE_RATE)
-            note_n = int(note_dur * SAMPLE_RATE)
-            for j in range(note_n):
-                idx = start_i + j
-                if idx >= n: break
-                t_rel = j / SAMPLE_RATE
-                env = math.exp(-t_rel * 4.0)
-                # Rich bass tone
-                bass = (math.sin(2 * math.pi * root * t_rel) * 0.6 +
-                        math.sin(2 * math.pi * root * 2.0 * t_rel) * 0.25)
-                samples[idx] += bass * env * 0.35
+        # 1. Four-on-the-floor Punchy Kick
+        k_start = int(t_start * SAMPLE_RATE)
+        k_len = int(0.22 * SAMPLE_RATE)
+        for j in range(k_len):
+            idx = (k_start + j) % n
+            t = j / SAMPLE_RATE
+            k_env = math.exp(-t * 22.0)
+            k_freq = 140.0 * math.exp(-t * 32.0) + 45.0
+            samples[idx] += math.sin(2 * math.pi * k_freq * t) * k_env * 0.75
+            
+        # 2. Snare / Clap on beats 1 and 3
+        if beat % 2 == 1:
+            s_start = int(t_start * SAMPLE_RATE)
+            s_len = int(0.18 * SAMPLE_RATE)
+            for j in range(s_len):
+                idx = (s_start + j) % n
+                t = j / SAMPLE_RATE
+                s_env = math.exp(-t * 20.0)
+                noise = (random.random() * 2.0 - 1.0)
+                tone = math.sin(2 * math.pi * 210.0 * t) * math.exp(-t * 30.0)
+                samples[idx] += (noise * 0.6 + tone * 0.4) * s_env * 0.55
                 
-        # Dungeon Kick (beat 0 and 2)
-        if bar_beat in [0, 2]:
-            start_i = int(beat_t * SAMPLE_RATE)
-            kick_n = int(0.25 * SAMPLE_RATE)
-            for j in range(kick_n):
-                idx = start_i + j
-                if idx >= n: break
-                t_rel = j / SAMPLE_RATE
-                k_env = math.exp(-t_rel * 20.0)
-                k_freq = 110.0 * math.exp(-t_rel * 30.0) + 40.0
-                kick = math.sin(2 * math.pi * k_freq * t_rel)
-                samples[idx] += kick * k_env * 0.38
-                
-        # Soft Snare / Shaker (beat 1 and 3)
-        if bar_beat in [1, 3]:
-            start_i = int(beat_t * SAMPLE_RATE)
-            snare_n = int(0.18 * SAMPLE_RATE)
-            for j in range(snare_n):
-                idx = start_i + j
-                if idx >= n: break
-                t_rel = j / SAMPLE_RATE
-                s_env = math.exp(-t_rel * 25.0)
-                snare = (random.random() * 2.0 - 1.0)
-                samples[idx] += snare * s_env * 0.16
+        # 3. Offbeat Hi-hat
+        h_start = int((t_start + beat_dur * 0.5) * SAMPLE_RATE)
+        h_len = int(0.08 * SAMPLE_RATE)
+        for j in range(h_len):
+            idx = (h_start + j) % n
+            t = j / SAMPLE_RATE
+            h_env = math.exp(-t * 55.0)
+            samples[idx] += (random.random() * 2.0 - 1.0) * h_env * 0.28
+            
+        # 4. Driving Bass Synth (8th note pulse)
+        for sub in [0.0, 0.5]:
+            b_start = int((t_start + sub * beat_dur) * SAMPLE_RATE)
+            b_len = int(beat_dur * 0.45 * SAMPLE_RATE)
+            pitch = root * (1.5 if sub > 0 and beat % 2 == 1 else 1.0)
+            for j in range(b_len):
+                idx = (b_start + j) % n
+                t = j / SAMPLE_RATE
+                b_env = math.exp(-t * 8.0)
+                saw = (math.sin(2 * math.pi * pitch * t) * 0.6 + 
+                       math.sin(4 * math.pi * pitch * t) * 0.3 + 
+                       math.sin(6 * math.pi * pitch * t) * 0.15)
+                samples[idx] += saw * b_env * 0.45
 
-    # 2. Arpeggiated Mystic Melody (16th notes: 4 per beat)
-    # Pentatonic scale D minor: D4, F4, G4, A4, C5, D5
-    scale = [293.66, 349.23, 392.00, 440.00, 523.25, 587.33]
-    arp_pattern = [0, 2, 3, 5, 4, 3, 2, 1, 0, 3, 4, 5, 3, 2, 1, 2] # 16 notes per bar
-    
-    for bar in range(8):
-        bar_start_t = bar * 4.0 * beat_dur
-        for step in range(16):
-            step_t = bar_start_t + step * (beat_dur / 4.0)
-            note_freq = scale[arp_pattern[step] % len(scale)]
-            if bar in [1, 5]: # modulate slight variations
-                note_freq *= 1.1892 # F/Bb feel
-            elif bar in [2, 6]:
-                note_freq *= 0.8909 # C/G feel
-                
-            start_i = int(step_t * SAMPLE_RATE)
-            step_n = int(0.22 * SAMPLE_RATE)
-            for j in range(step_n):
-                idx = (start_i + j) % n # wrap seamlessly for perfect loop
-                t_rel = j / SAMPLE_RATE
-                env = math.exp(-t_rel * 16.0)
-                chime = (math.sin(2 * math.pi * note_freq * t_rel) * 0.7 +
-                         math.sin(2 * math.pi * note_freq * 2.0 * t_rel) * 0.2)
-                samples[idx] += chime * env * 0.22
+    # 5. Lead Synth Melody (16th note arpeggios + theme)
+    scale = [293.66, 349.23, 392.00, 440.00, 523.25, 587.33, 698.46]
+    theme = [0, 2, 3, 5,  4, 3, 2, 0,  2, 3, 5, 6,  5, 4, 3, 2]
 
-    # Smooth normalization
-    max_val = max(abs(s) for s in samples) or 1.0
-    samples = [s / max_val * 0.85 for s in samples]
-    return samples
+    steps = int(dur / (beat_dur / 4.0))
+    for s in range(steps):
+        step_t = s * (beat_dur / 4.0)
+        note_f = scale[theme[s % len(theme)] % len(scale)]
+        m_start = int(step_t * SAMPLE_RATE)
+        m_len = int(0.18 * SAMPLE_RATE)
+        for j in range(m_len):
+            idx = (m_start + j) % n
+            t = j / SAMPLE_RATE
+            m_env = math.exp(-t * 12.0)
+            lead = math.sin(2 * math.pi * note_f * t) + math.sin(4 * math.pi * note_f * t) * 0.25
+            samples[idx] += lead * m_env * 0.32
+
+    # Soft saturation compression for full punchy RMS
+    comp_samples = [math.tanh(s * 1.35) * 0.92 for s in samples]
+    return comp_samples
 
 def main():
     write_wav("sounds/swing.wav", make_swing())

@@ -12,6 +12,7 @@ extends CanvasLayer
 @onready var result_sub   : Label          = $ResultPanel/Margin/VBox/SubLabel
 @onready var result_btn   : Button         = $ResultPanel/Margin/VBox/RestartBtn
 @onready var attack_hint  : Label          = $HUD/TopRight/AttackHint
+@onready var bgm_btn      : Button         = $HUD/TopRight/BGMBtn
 @onready var boss_label   : Label          = $HUD/BossWarning
 @onready var joystick     : Node2D         = $MobileControls/Joystick
 @onready var atk_btn      : Node2D         = $MobileControls/AttackBtn
@@ -32,6 +33,7 @@ var mobile_magic      : bool    = false
 func _ready():
 	story_btn.pressed.connect(_on_story_ok)
 	result_btn.pressed.connect(_on_restart)
+	bgm_btn.pressed.connect(_on_bgm_btn_pressed)
 	result_panel.hide()
 	boss_label.hide()
 	joystick.direction_changed.connect(_on_joystick_changed)
@@ -41,6 +43,11 @@ func _ready():
 	magic_btn.pressed.connect(_on_magic_pressed)
 	get_viewport().size_changed.connect(_layout_mobile)
 	call_deferred(&"_layout_mobile")
+
+func _on_bgm_btn_pressed():
+	SoundManager.play("click")
+	var is_on = SoundManager.toggle_bgm()
+	bgm_btn.text = "🎵 BGM ON" if is_on else "🔇 BGM OFF"
 
 func _layout_mobile():
 	var vp = get_viewport().get_visible_rect().size
