@@ -101,6 +101,7 @@ func take_damage(dmg: int):
 
 func _die():
 	is_dead = true
+	SoundManager.play("enemy_die", randf_range(0.95, 1.1))
 	emit_signal("died", self)
 	# 사망 깜박임 후 제거
 	$Sprite2D.modulate = Color(0.5, 0.5, 0.5, 0.5)

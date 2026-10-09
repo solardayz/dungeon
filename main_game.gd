@@ -84,7 +84,8 @@ func _on_enemy_died(_enemy):
 	if enemy_count <= 0 and not boss_spawned:
 		boss_spawned = true
 		await get_tree().create_timer(1.2).timeout
-		# 보스 등장 메시지
+		# 보스 등장 메시지 및 효과음
+		SoundManager.play("boss_spawn", 1.0, 3.0)
 		hud.show_boss_warning()
 		await get_tree().create_timer(2.0).timeout
 		_spawn_enemy(BOSS_SPAWN, true)

@@ -107,6 +107,7 @@ func _physics_process(delta):
 		dash_dir    = dir
 		invincible  = true
 		inv_timer   = DASH_TIME + 0.1
+		SoundManager.play("dash", randf_range(0.95, 1.1))
 
 	# ── 공격: 키보드 + 모바일 ──
 	var want_atk = Input.is_action_just_pressed(&"attack")
@@ -120,10 +121,15 @@ func _physics_process(delta):
 func _do_attack():
 	atk_cooldown = ATTACK_COOLDOWN
 	state = "attack"
+	SoundManager.play("swing", randf_range(0.95, 1.1))
 	var enemies = get_tree().get_nodes_in_group("enemy")
+	var hit_any = false
 	for e in enemies:
 		if is_instance_valid(e) and global_position.distance_to(e.global_position) < ATTACK_RANGE:
 			e.take_damage(ATTACK_DMG)
+			hit_any = true
+	if hit_any:
+		SoundManager.play("hit", randf_range(0.95, 1.15))
 	await get_tree().create_timer(0.3).timeout
 	if not is_dead:
 		state = "idle"
@@ -135,6 +141,7 @@ func take_damage(dmg: int):
 	emit_signal("hp_changed", hp, max_hp)
 	invincible = true
 	inv_timer  = 0.6
+	SoundManager.play("hurt", randf_range(0.95, 1.05))
 	$Sprite2D.modulate = Color(1, 0.3, 0.3)
 	await get_tree().create_timer(0.15).timeout
 	if is_instance_valid($Sprite2D):

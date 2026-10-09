@@ -77,18 +77,22 @@ func _on_player_died():
 func show_result(victory: bool):
 	result_panel.show()
 	if victory:
+		SoundManager.play("victory", 1.0, 2.0)
 		result_label.text = "승리!"
 		result_sub.text   = "고블린 왕 그롬카르를 처치했습니다!\n왕국에 평화가 찾아왔습니다."
 		result_label.add_theme_color_override("font_color", Color(1, 0.85, 0))
 	else:
+		SoundManager.play("defeat", 1.0, 2.0)
 		result_label.text = "패배..."
 		result_sub.text   = "기사가 쓰러졌습니다.\n다시 도전하세요!"
 		result_label.add_theme_color_override("font_color", Color(1, 0.3, 0.3))
 
 func _on_story_ok():
+	SoundManager.play("click")
 	story_panel.hide()
 
 func _on_restart():
+	SoundManager.play("click")
 	get_tree().reload_current_scene()
 
 func show_story(text_str: String):
