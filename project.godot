@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="어둠의 던전"
+config/name="dungeon"
 config/description="This demo shows a traditional isometric view with depth sorting.
 
 A character can move around the level and will also slide around objects,
@@ -26,6 +26,7 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/handheld/orientation="sensor_landscape"
 
 [input]
 

@@ -37,9 +37,9 @@ func _ready():
 
 func _layout_mobile():
 	var vp = get_viewport().get_visible_rect().size
-	joystick.position = Vector2(130, vp.y - 130)
-	atk_btn.position  = Vector2(vp.x - 110, vp.y - 110)
-	dash_btn.position = Vector2(vp.x - 235, vp.y - 95)
+	joystick.position = Vector2(160, vp.y - 160)
+	atk_btn.position  = Vector2(vp.x - 140, vp.y - 140)
+	dash_btn.position = Vector2(vp.x - 310, vp.y - 120)
 
 func setup(p, t: int):
 	player = p

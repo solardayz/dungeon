@@ -7,15 +7,15 @@
 
 [sub_resource type="Theme" id="Theme_kr"]
 default_font = ExtResource("4")
-default_font_size = 15
+default_font_size = 18
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_banner"]
-bg_color = Color(0.08, 0.1, 0.16, 0.88)
+bg_color = Color(0.08, 0.1, 0.16, 0.9)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.9, 0.75, 0.3, 0.9)
+border_color = Color(0.9, 0.75, 0.3, 0.95)
 corner_radius_top_left = 12
 corner_radius_top_right = 12
 corner_radius_bottom_right = 12
@@ -39,22 +39,22 @@ mouse_filter = 2
 theme = SubResource("Theme_kr")
 
 [node name="TopLeft" type="VBoxContainer" parent="HUD"]
-offset_left = 14.0
-offset_top = 12.0
-offset_right = 260.0
-offset_bottom = 75.0
-theme_override_constants/separation = 4
+offset_left = 16.0
+offset_top = 14.0
+offset_right = 320.0
+offset_bottom = 90.0
+theme_override_constants/separation = 6
 
 [node name="HPRow" type="HBoxContainer" parent="HUD/TopLeft"]
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 
 [node name="HPIcon" type="Label" parent="HUD/TopLeft/HPRow"]
 text = "HP"
 add_theme_color_override "font_color" = Color(1, 0.35, 0.35, 1)
-add_theme_font_size_override "font_size" = 16
+add_theme_font_size_override "font_size" = 20
 
 [node name="HPBar" type="ProgressBar" parent="HUD/TopLeft/HPRow"]
-custom_minimum_size = Vector2(130, 18)
+custom_minimum_size = Vector2(160, 24)
 min_value = 0.0
 max_value = 100.0
 value = 100.0
@@ -63,35 +63,35 @@ show_percentage = false
 [node name="HPLabel" type="Label" parent="HUD/TopLeft/HPRow"]
 text = "100/100"
 add_theme_color_override "font_color" = Color(1, 0.9, 0.9, 1)
-add_theme_font_size_override "font_size" = 13
+add_theme_font_size_override "font_size" = 18
 
 [node name="KillLabel" type="Label" parent="HUD/TopLeft"]
 text = "처치: 0 / 0"
 add_theme_color_override "font_color" = Color(1, 1, 0.2, 1)
-add_theme_font_size_override "font_size" = 14
+add_theme_font_size_override "font_size" = 20
 
 [node name="TopRight" type="Control" parent="HUD"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -300.0
-offset_top = 12.0
-offset_right = -14.0
-offset_bottom = 45.0
+offset_left = -360.0
+offset_top = 14.0
+offset_right = -16.0
+offset_bottom = 50.0
 mouse_filter = 2
 
 [node name="AttackHint" type="Label" parent="HUD/TopRight"]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -280.0
+offset_left = -340.0
 offset_top = 0.0
 offset_right = 0.0
-offset_bottom = 24.0
+offset_bottom = 28.0
 text = "WASD: 이동 | Space: 공격 | Shift: 대쉬"
 horizontal_alignment = 2
-add_theme_color_override "font_color" = Color(0.75, 0.95, 0.85, 0.85)
-add_theme_font_size_override "font_size" = 12
+add_theme_color_override "font_color" = Color(0.8, 1, 0.9, 0.9)
+add_theme_font_size_override "font_size" = 15
 
 [node name="BossWarning" type="Label" parent="HUD"]
 visible = false
@@ -100,23 +100,23 @@ anchor_left = 0.5
 anchor_top = 0.22
 anchor_right = 0.5
 anchor_bottom = 0.22
-offset_left = -250.0
-offset_top = -20.0
-offset_right = 250.0
-offset_bottom = 20.0
+offset_left = -280.0
+offset_top = -25.0
+offset_right = 280.0
+offset_bottom = 25.0
 text = "고블린 왕 그롬카르가 나타났다!"
 horizontal_alignment = 1
-add_theme_font_size_override "font_size" = 22
+add_theme_font_size_override "font_size" = 26
 add_theme_color_override "font_color" = Color(1, 0.25, 0.1, 1)
 
 [node name="StoryBanner" type="Panel" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -330.0
-offset_top = 10.0
-offset_right = 330.0
-offset_bottom = 75.0
+offset_left = -360.0
+offset_top = 12.0
+offset_right = 360.0
+offset_bottom = 85.0
 theme = SubResource("Theme_kr")
 theme_override_styles/panel = SubResource("StyleBoxFlat_banner")
 
@@ -124,54 +124,54 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_banner")
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_right = 16
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_bottom = 8
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
 
 [node name="HBox" type="HBoxContainer" parent="StoryBanner/Margin"]
-theme_override_constants/separation = 14
+theme_override_constants/separation = 16
 
 [node name="StoryText" type="Label" parent="StoryBanner/Margin/HBox"]
-custom_minimum_size = Vector2(480, 0)
+custom_minimum_size = Vector2(490, 0)
 size_flags_horizontal = 3
-text = "어둠의 던전: 고블린들을 처치하고 왕 그롬카르를 무찌르세요!"
+text = "dungeon: 고블린들을 처치하고 왕 그롬카르를 무찌르세요!"
 vertical_alignment = 1
 autowrap_mode = 2
 add_theme_color_override "font_color" = Color(1, 0.9, 0.6, 1)
-add_theme_font_size_override "font_size" = 13
+add_theme_font_size_override "font_size" = 16
 
 [node name="OKButton" type="Button" parent="StoryBanner/Margin/HBox"]
-custom_minimum_size = Vector2(100, 36)
+custom_minimum_size = Vector2(120, 42)
 text = "던전 시작"
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn")
-add_theme_font_size_override "font_size" = 14
+add_theme_font_size_override "font_size" = 18
 
 [node name="MobileControls" type="Node2D" parent="."]
 
 [node name="Joystick" type="Node2D" parent="MobileControls"]
 script = ExtResource("2")
-position = Vector2(130, 560)
+position = Vector2(160, 560)
 
 [node name="AttackBtn" type="Node2D" parent="MobileControls"]
 script = ExtResource("3")
-position = Vector2(1100, 540)
-radius = 58.0
-base_color = Color(0.9, 0.25, 0.2, 0.75)
+position = Vector2(1140, 540)
+radius = 85.0
+base_color = Color(0.9, 0.25, 0.2, 0.8)
 pressed_color = Color(1, 0.55, 0.45, 0.95)
 text = "공격"
 action_name = &"attack"
-font_size = 22
+font_size = 34
 
 [node name="DashBtn" type="Node2D" parent="MobileControls"]
 script = ExtResource("3")
-position = Vector2(980, 565)
-radius = 46.0
-base_color = Color(0.2, 0.55, 0.95, 0.75)
+position = Vector2(970, 570)
+radius = 68.0
+base_color = Color(0.2, 0.55, 0.95, 0.8)
 pressed_color = Color(0.4, 0.8, 1, 0.95)
 text = "대쉬"
 action_name = &"dash"
-font_size = 18
+font_size = 28
 
 [node name="ResultPanel" type="Panel" parent="."]
 visible = false
@@ -180,10 +180,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -140.0
-offset_right = 200.0
-offset_bottom = 140.0
+offset_left = -220.0
+offset_top = -150.0
+offset_right = 220.0
+offset_bottom = 150.0
 theme = SubResource("Theme_kr")
 
 [node name="Margin" type="MarginContainer" parent="ResultPanel"]
@@ -196,21 +196,21 @@ theme_override_constants/margin_top = 20
 theme_override_constants/margin_bottom = 20
 
 [node name="VBox" type="VBoxContainer" parent="ResultPanel/Margin"]
-theme_override_constants/separation = 14
+theme_override_constants/separation = 16
 
 [node name="ResultLabel" type="Label" parent="ResultPanel/Margin/VBox"]
 text = "결과"
 horizontal_alignment = 1
-add_theme_font_size_override "font_size" = 28
+add_theme_font_size_override "font_size" = 34
 add_theme_color_override "font_color" = Color(1, 0.85, 0.2, 1)
 
 [node name="SubLabel" type="Label" parent="ResultPanel/Margin/VBox"]
 text = ""
 horizontal_alignment = 1
 autowrap_mode = 3
-add_theme_font_size_override "font_size" = 14
+add_theme_font_size_override "font_size" = 18
 
 [node name="RestartBtn" type="Button" parent="ResultPanel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 48)
 text = "다시 시작"
-add_theme_font_size_override "font_size" = 15
+add_theme_font_size_override "font_size" = 20

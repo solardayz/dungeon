@@ -3,8 +3,8 @@ extends Node2D
 ## 가상 조이스틱 - 터치 및 마우스 입력 지원
 signal direction_changed(dir: Vector2)
 
-const RADIUS: float = 85.0
-const KNOB_RADIUS: float = 38.0
+const RADIUS: float = 115.0
+const KNOB_RADIUS: float = 52.0
 
 var touch_index: int = -1
 var knob_offset: Vector2 = Vector2.ZERO

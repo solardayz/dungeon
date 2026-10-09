@@ -58,7 +58,7 @@ func _ready():
 	hud.setup(player_node, total_enemies)
 
 	# 스토리 표시
-	hud.show_story("고블린 왕 그롬카르가 깨어났습니다! 고블린들을 처치하고 왕을 무찌르세요.")
+	hud.show_story("dungeon: 고블린들을 처치하고 왕 그롬카르를 무찌르세요!")
 
 func _spawn_enemy(pos: Vector2, boss: bool):
 	var e = ENEMY_SCENE.instantiate()
